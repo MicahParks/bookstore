@@ -4,15 +4,14 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 	"go.uber.org/zap"
 
-	"github.com/MicahParks/bookstore/models"
 	"github.com/MicahParks/bookstore/restapi/operations/api"
 	"github.com/MicahParks/bookstore/storage"
 )
 
-// HandleStatus creates a POST /api/status endpoint handler via a closure. It can perform read operations on Status the
-// latest data.
-func HandleStatus(logger *zap.SugaredLogger, statusStore storage.StatusStore) api.BookStatusHandlerFunc {
-	return func(params api.BookStatusParams) middleware.Responder {
+// HandleHistory creates a POST /api/history endpoint handler via a closure. It can perform read operations on Status
+// data.
+func HandleHistory(logger *zap.SugaredLogger, statusStore storage.StatusStore) api.BookHistoryHandlerFunc {
+	return func(params api.BookHistoryParams) middleware.Responder {
 
 		// Debug info.
 		logger.Debugw("",
@@ -36,17 +35,11 @@ func HandleStatus(logger *zap.SugaredLogger, statusStore storage.StatusStore) ap
 			// Report the error to the client.
 			//
 			// Typically don't show internal error message, but this is for speed.
-			return errorResponse(500, msg+": "+err.Error(), &api.BookStatusDefault{})
+			return errorResponse(500, msg+": "+err.Error(), &api.BookHistoryDefault{})
 		}
 
-		// Get the latest statuses.
-		latest := make(map[string]models.Status, len(statuses))
-		for _, status := range statuses {
-			latest[status.Isbn] = status.History[len(status.History)-1]
-		}
-
-		return &api.BookStatusOK{
-			Payload: latest,
+		return &api.BookHistoryOK{
+			Payload: statuses,
 		}
 	}
 }
