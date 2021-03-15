@@ -17,7 +17,8 @@ func FrontendMiddleware(next http.Handler) (handler http.HandlerFunc) {
 	return func(writer http.ResponseWriter, request *http.Request) {
 
 		// If the /api prefix is seen, follow the middleware pattern.
-		if strings.HasPrefix(request.URL.Path, "/api") {
+		path := request.URL.Path
+		if strings.HasPrefix(path, "/api") || path == "/swagger.json" || path == "/docs" {
 			next.ServeHTTP(writer, request)
 		} else {
 

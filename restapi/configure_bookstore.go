@@ -42,9 +42,7 @@ func configureAPI(api *operations.BookstoreAPI) http.Handler {
 	// Create the Status data storage.
 	statusStore := storage.NewMemStatus()
 
-	api.UseSwaggerUI()
-	// To continue using redoc as your UI, uncomment the following line
-	// api.UseRedoc()
+	api.UseRedoc()
 
 	api.JSONConsumer = runtime.JSONConsumer()
 
