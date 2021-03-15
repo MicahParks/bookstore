@@ -25,28 +25,30 @@ func HandleDelete(logger *zap.SugaredLogger, bookStore storage.BookStore, status
 		if err := bookStore.Delete(ctx, params.Isbns); err != nil {
 
 			// Log the error.
-			logger.Infow("Failed to delete Book data.",
+			msg := "Failed to delete Book data."
+			logger.Infow(msg,
 				"error", err.Error(),
 			)
 
 			// Report the error to the client.
 			//
 			// Typically don't show internal error message, but this is for speed.
-			return errorResponse(500, err.Error(), &api.BookWriteDefault{})
+			return errorResponse(500, msg+": "+err.Error(), &api.BookWriteDefault{})
 		}
 
 		// Delete the ISBNs from the StatusStore.
 		if err := statusStore.Delete(ctx, params.Isbns); err != nil {
 
 			// Log the error.
-			logger.Infow("Failed to delete Status data.",
+			msg := "Failed to delete Status data."
+			logger.Infow(msg,
 				"error", err.Error(),
 			)
 
 			// Report the error to the client.
 			//
 			// Typically don't show internal error message, but this is for speed.
-			return errorResponse(500, err.Error(), &api.BookWriteDefault{})
+			return errorResponse(500, msg+": "+err.Error(), &api.BookWriteDefault{})
 		}
 
 		return &api.BookDeleteOK{}

@@ -21,6 +21,9 @@ type StatusType string
 
 const (
 
+	// StatusTypeAcquired captures enum value "acquired"
+	StatusTypeAcquired StatusType = "acquired"
+
 	// StatusTypeCheckin captures enum value "checkin"
 	StatusTypeCheckin StatusType = "checkin"
 
@@ -33,7 +36,7 @@ var statusTypeEnum []interface{}
 
 func init() {
 	var res []StatusType
-	if err := json.Unmarshal([]byte(`["checkin","checkout"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["acquired","checkin","checkout"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {

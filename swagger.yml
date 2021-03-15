@@ -279,6 +279,7 @@ definitions:
   # Enum for types of status changes.
   StatusType:
     enum:
+      - "acquired"
       - "checkin"
       - "checkout"
     type: "string"

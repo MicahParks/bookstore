@@ -401,6 +401,7 @@ func init() {
     "StatusType": {
       "type": "string",
       "enum": [
+        "acquired",
         "checkin",
         "checkout"
       ]
@@ -801,6 +802,7 @@ func init() {
     "StatusType": {
       "type": "string",
       "enum": [
+        "acquired",
         "checkin",
         "checkout"
       ]

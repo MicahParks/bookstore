@@ -2,17 +2,20 @@ package endpoints
 
 import (
 	"errors"
+	"time"
 
 	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/strfmt"
 	"go.uber.org/zap"
 
+	"github.com/MicahParks/bookstore/models"
 	"github.com/MicahParks/bookstore/restapi/operations/api"
 	"github.com/MicahParks/bookstore/storage"
 )
 
 // HandleWrite creates and POST /api/{operation}/books endpoint handler via a closure. It can perform write operations on
 // Book data.
-func HandleWrite(logger *zap.SugaredLogger, bookStore storage.BookStore) api.BookWriteHandlerFunc {
+func HandleWrite(logger *zap.SugaredLogger, bookStore storage.BookStore, statusStore storage.StatusStore) api.BookWriteHandlerFunc {
 	return func(params api.BookWriteParams) middleware.Responder {
 
 		// Debug info.
@@ -39,7 +42,8 @@ func HandleWrite(logger *zap.SugaredLogger, bookStore storage.BookStore) api.Boo
 		if err := bookStore.Write(ctx, params.Books, operation); err != nil {
 
 			// Log the error.
-			logger.Infow("Failed to write Book data.",
+			msg := "Failed to write Book data."
+			logger.Infow(msg,
 				"error", err.Error(),
 			)
 
@@ -54,7 +58,36 @@ func HandleWrite(logger *zap.SugaredLogger, bookStore storage.BookStore) api.Boo
 			// Report the error to the client.
 			//
 			// Typically don't show internal error message, but this is for speed.
-			return errorResponse(code, err.Error(), &api.BookWriteDefault{})
+			return errorResponse(code, msg+": "+err.Error(), &api.BookWriteDefault{})
+		}
+
+		// Get the current system time.
+		now := time.Now()
+
+		// Create the map of status.
+		statuses := make(map[string]models.Status, len(params.Books))
+
+		// Iterate through the given books, mark their status as acquired.
+		for _, book := range params.Books {
+			statuses[book.ISBN] = models.Status{
+				Time: strfmt.DateTime(now),
+				Type: models.StatusTypeAcquired,
+			}
+		}
+
+		// Write the book statuses to the StatusStore.
+		if err := statusStore.Write(ctx, statuses, storage.Upsert); err != nil { // TODO Not always an upsert...
+
+			// Log the error.
+			msg := "Failed to update the statuses for written books."
+			logger.Infow(msg,
+				"error", err.Error(),
+			)
+
+			// Report the error to the client.
+			//
+			// Typically don't show internal error message, but this is for speed.
+			return errorResponse(500, msg+": "+err.Error(), &api.BookWriteDefault{})
 		}
 
 		return &api.BookWriteOK{}
