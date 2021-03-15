@@ -42,7 +42,7 @@ func configureAPI(api *operations.BookstoreAPI) http.Handler {
 	// Create the Status data storage.
 	statusStore := storage.NewMemStatus()
 
-	api.UseRedoc()
+	api.UseSwaggerUI()
 
 	api.JSONConsumer = runtime.JSONConsumer()
 
