@@ -1,8 +1,6 @@
 package endpoints
 
 import (
-	"context"
-
 	"github.com/go-openapi/runtime/middleware"
 	"go.uber.org/zap"
 
@@ -11,7 +9,7 @@ import (
 )
 
 // HandleRead creates a POST /api/books endpoint handler via a closure. It can perform read operations on Book data.
-func HandleRead(logger *zap.SugaredLogger, bookStore storage.BookStore, statusStore storage.StatusStore) api.BookReadHandlerFunc {
+func HandleRead(logger *zap.SugaredLogger, bookStore storage.BookStore) api.BookReadHandlerFunc {
 	return func(params api.BookReadParams) middleware.Responder {
 
 		// Debug info.
@@ -24,12 +22,23 @@ func HandleRead(logger *zap.SugaredLogger, bookStore storage.BookStore, statusSt
 		defer cancel()
 
 		// Read the books from the BookStore.
-		books,err := bookStore.Read(ctx, params.Isbns)
+		books, err := bookStore.Read(ctx, params.Isbns)
 		if err != nil {
-			// TODO.
+
+			// Log the error.
+			msg := "Failed to read Book data."
+			logger.Infow(msg,
+				"error", err.Error(),
+			)
+
+			// Report the error to the client.
+			//
+			// Typically don't show internal error message, but this is for speed.
+			return errorResponse(500, msg+": "+err.Error(), &api.BookReadDefault{})
 		}
 
-
-		return &api.BookReadOK{Payload: }
+		return &api.BookReadOK{
+			Payload: books,
+		}
 	}
 }
