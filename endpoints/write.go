@@ -52,7 +52,7 @@ func HandleWrite(logger *zap.SugaredLogger, bookStore storage.BookStore, statusS
 
 			// Check to see if it was a client side error.
 			if errors.Is(err, storage.ErrISBNExists) || errors.Is(err, storage.ErrISBNNotFound) {
-				code = 400
+				code = 422
 			}
 
 			// Report the error to the client.

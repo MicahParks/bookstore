@@ -12,8 +12,8 @@ import (
 	"github.com/MicahParks/bookstore/storage"
 )
 
-// HandleCheckin creates a POST /api/checkin endpoint handler via a closure. It can update the Status data for ISBNs.
-func HandleCheckin(logger *zap.SugaredLogger, statusStore storage.StatusStore) api.BookCheckinHandlerFunc {
+// HandleCheckout creates a POST /api/checkout endpoint handler via a closure. It can update the Status data for ISBNs.
+func HandleCheckout(logger *zap.SugaredLogger, statusStore storage.StatusStore) api.BookCheckinHandlerFunc {
 	return func(params api.BookCheckinParams) middleware.Responder {
 
 		// Debug info.
@@ -41,7 +41,7 @@ func HandleCheckin(logger *zap.SugaredLogger, statusStore storage.StatusStore) a
 			return errorResponse(500, msg+": "+err.Error(), &api.BookCheckinDefault{})
 		}
 
-		// Check to make sure all books are currently checked out.
+		// Check to make sure all books are currently checked in or aquired.
 		for _, isbn := range params.Isbns {
 
 			// Confirm the ISBN has historical statuses.
@@ -49,11 +49,12 @@ func HandleCheckin(logger *zap.SugaredLogger, statusStore storage.StatusStore) a
 			if len(history) > 0 {
 
 				// Confirm the latest status has it checked out.
-				if history[len(history)-1].Type != models.StatusTypeCheckout {
-					return cantCheckin()
+				statusType := history[len(history)-1].Type
+				if statusType != models.StatusTypeCheckout && statusType != models.StatusTypeAcquired {
+					return cantCheckout()
 				}
 			} else {
-				return cantCheckin()
+				return cantCheckout()
 			}
 		}
 
@@ -69,7 +70,7 @@ func HandleCheckin(logger *zap.SugaredLogger, statusStore storage.StatusStore) a
 			// Add to the historical status data.
 			status.History = append(status.History, models.Status{
 				Time: now,
-				Type: models.StatusTypeCheckin,
+				Type: models.StatusTypeCheckout,
 			})
 
 			// Update the new statuses map.
@@ -95,7 +96,7 @@ func HandleCheckin(logger *zap.SugaredLogger, statusStore storage.StatusStore) a
 	}
 }
 
-// cantCheckin reports to the client that a book can't be checked in if it hasn't been checked out.
-func cantCheckin() middleware.Responder {
-	return errorResponse(422, "Cannot check in book that is not checked out.", &api.BookCheckinDefault{})
+// cantCheckout reports to the client that a book can't be checked in if it hasn't been checked in or acquired.
+func cantCheckout() middleware.Responder {
+	return errorResponse(422, "Cannot check in book that is not checked in or acquired.", &api.BookCheckinDefault{})
 }
