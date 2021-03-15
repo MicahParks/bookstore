@@ -1,0 +1,284 @@
+swagger: "2.0"
+
+basePath: "/"
+
+host: "localhost:8080"
+
+info:
+  description: "A bookstore coding challenge"
+  license:
+    name: "MIT"
+    url: "https://opensource.org/licenses/MIT"
+  title: "bookstore"
+  version: "0.0.1"
+
+schemes:
+  - "http"
+
+tags:
+  - description: "Endpoints that perform actions on bookstore data."
+    name: "api"
+  - description: "Endpoints required by the system that are not public facing and do not affect bookstore data."
+    name: "system"
+
+paths:
+  /api/alive:
+    get:
+      operationId: "alive"
+      summary: "Used by Caddy or other reverse proxy to determine if the service is alive."
+      responses:
+        200:
+          description: "Service is alive."
+      tags:
+        - "system"
+
+  /api/books/{operation}:
+    post:
+      consumes:
+        - "application/json"
+      operationId: "bookWrite"
+      summary: "Insert, update, or upsert books to the library."
+      parameters:
+        - description: "The array of books to insert, update, or upsert to the library."
+          in: "body"
+          name: "books"
+          required: true
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Book"
+        - description: "The write operation to perform with the book data."
+          in: "path"
+          enum:
+            - "insert"
+            - "update"
+            - "upsert"
+          name: "operation"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "The books have been written to the library."
+        default:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Error"
+      tags:
+        - "api"
+
+  /api/books: # Delete and Read
+    delete:
+      consumes:
+        - "application/json" # TODO Need produces for when error is returned?
+      operationId: "bookDelete"
+      summary: "Delete the given books."
+      parameters:
+        - description: "The ISBNs of the books to delete."
+          in: "body"
+          name: "isbns"
+          required: true
+          schema:
+            type: "array"
+            items:
+              type: "string"
+      responses:
+        200:
+          description: "The books have been deleted."
+        default:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Error"
+      tags:
+        - "api"
+    post:
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      operationId: "bookRead"
+      summary: "Read the book data for the given ISBNs."
+      parameters:
+        - description: "The ISBNs of the books whose data is to be read."
+          in: "body"
+          name: "isbns"
+          schema:
+            type: "array"
+            items:
+              type: "string"
+      responses:
+        200:
+          description: "A map of ISBNs to book data for the requested books."
+          schema:
+            additionalProperties:
+              $ref: "#/definitions/Book"
+        default:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Error"
+      tags:
+        - "api"
+
+
+  /api/checkin:
+    post:
+      consumes:
+        - "application/json"
+      operationId: "bookCheckin"
+      summary: "Check in the given books."
+      parameters:
+        - description: "The ISBNs of the books to check in."
+          in: "body"
+          name: "isbns"
+          schema:
+            type: "array"
+            items:
+              type: "string"
+      responses:
+        200:
+          description: "The books have been checked in."
+        default:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Error"
+      tags:
+        - "api"
+
+  /api/checkout:
+    post:
+      consumes:
+        - "application/json"
+      operationId: "bookCheckout"
+      summary: "Check out the given books."
+      parameters:
+        - description: "The ISBNs of the books to check out."
+          in: "body"
+          name: "isbns"
+          schema:
+            type: "array"
+            items:
+              type: "string"
+      responses:
+        200:
+          description: "The books have been checked out."
+        default:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Error"
+      tags:
+        - "api"
+
+  /api/status:
+    post:
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      operationId: "bookStatus"
+      summary: "Get the checked in or checked out status for the given books."
+      parameters:
+        - description: "The ISBNs of the books to get the status for."
+          in: "body"
+          name: "isbns"
+          schema:
+            type: "array"
+            items:
+              type: "string"
+      responses:
+        200:
+          description: "A mapping of book ISBNs to book status."
+          schema:
+            additionalProperties:
+              $ref: "#/definitions/Status"
+        default:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Error"
+      tags:
+        - "api"
+
+  /api/history:
+    post:
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      operationId: "bookHistory"
+      summary: "Get the history for the given books."
+      parameters:
+        - description: "The ISBNs of the books to get the history for."
+          in: "body"
+          name: "isbns"
+          schema:
+            type: "array"
+            items:
+              type: "string"
+      responses:
+        200:
+          description: "A mapping of book ISBNs to book history."
+          schema:
+            additionalProperties:
+              $ref: "#/definitions/History"
+        default:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Error"
+      tags:
+        - "api"
+
+definitions:
+
+  # Schema for a library book.
+  Book:
+    properties:
+      author:
+        type: "string"
+      description:
+        type: "string"
+      isbn:
+        type: "string"
+        x-go-name: "ISBN"
+      title:
+        type: "string"
+    x-nullable: false
+
+  # Schema for error response body.
+  Error:
+    properties:
+      code:
+        type: "integer"
+        x-nullable: false
+      message:
+        type: "string"
+        x-nullable: false
+    required:
+      - "code"
+      - "message"
+    type: "object"
+
+  # Schema for library book history.
+  History:
+    properties:
+      isbn:
+        type: "string"
+      history:
+        type: "array"
+        items:
+          $ref: "#/definitions/Status"
+        x-nullable: false
+
+
+  # Schema for book status change. (Getting checked in or checked out.
+  Status:
+    properties:
+      time:
+        type: "string"
+        format: "date-time"
+      type:
+        $ref: "#/definitions/StatusType"
+
+  # Enum for types of status changes.
+  StatusType:
+    enum:
+      - "checkin"
+      - "checkout"
+    type: "string"
