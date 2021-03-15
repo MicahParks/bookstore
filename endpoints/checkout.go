@@ -13,8 +13,8 @@ import (
 )
 
 // HandleCheckout creates a POST /api/checkout endpoint handler via a closure. It can update the Status data for ISBNs.
-func HandleCheckout(logger *zap.SugaredLogger, statusStore storage.StatusStore) api.BookCheckinHandlerFunc {
-	return func(params api.BookCheckinParams) middleware.Responder {
+func HandleCheckout(logger *zap.SugaredLogger, statusStore storage.StatusStore) api.BookCheckoutHandlerFunc {
+	return func(params api.BookCheckoutParams) middleware.Responder {
 
 		// Debug info.
 		logger.Debugw("",
@@ -38,10 +38,10 @@ func HandleCheckout(logger *zap.SugaredLogger, statusStore storage.StatusStore) 
 			// Report the error to the client.
 			//
 			// Typically don't show internal error message, but this is for speed.
-			return errorResponse(500, msg+": "+err.Error(), &api.BookCheckinDefault{})
+			return errorResponse(500, msg+": "+err.Error(), &api.BookCheckoutDefault{})
 		}
 
-		// Check to make sure all books are currently checked in or aquired.
+		// Check to make sure all books are currently checked in or acquired.
 		for _, isbn := range params.Isbns {
 
 			// Confirm the ISBN has historical statuses.
@@ -89,7 +89,7 @@ func HandleCheckout(logger *zap.SugaredLogger, statusStore storage.StatusStore) 
 			// Report the error to the client.
 			//
 			// Typically don't show internal error message, but this is for speed.
-			return errorResponse(500, msg+": "+err.Error(), &api.BookCheckinDefault{})
+			return errorResponse(500, msg+": "+err.Error(), &api.BookCheckoutDefault{})
 		}
 
 		return &api.BookCheckinOK{}
@@ -98,5 +98,5 @@ func HandleCheckout(logger *zap.SugaredLogger, statusStore storage.StatusStore) 
 
 // cantCheckout reports to the client that a book can't be checked in if it hasn't been checked in or acquired.
 func cantCheckout() middleware.Responder {
-	return errorResponse(422, "Cannot check in book that is not checked in or acquired.", &api.BookCheckinDefault{})
+	return errorResponse(422, "Cannot check in book that is not checked in or acquired.", &api.BookCheckoutDefault{})
 }

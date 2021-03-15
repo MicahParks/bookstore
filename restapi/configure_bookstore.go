@@ -52,7 +52,10 @@ func configureAPI(api *operations.BookstoreAPI) http.Handler {
 	// Assign the endpoint handlers.
 	api.SystemAliveHandler = endpoints.HandleAlive()
 	api.APIBookDeleteHandler = endpoints.HandleDelete(logger.Named("DELETE /api/books"), bookStore, statusStore)
+	api.APIBookCheckinHandler = endpoints.HandleCheckin(logger.Named("POST /api/checkin"), statusStore)
+	api.APIBookCheckoutHandler = endpoints.HandleCheckout(logger.Named("POST /api/checkout"), statusStore)
 	api.APIBookReadHandler = endpoints.HandleRead(logger.Named("POST /api/books"), bookStore)
+
 	api.APIBookWriteHandler = endpoints.HandleWrite(logger.Named("POST /api/books/{operation}"), bookStore, statusStore)
 
 	api.PreServerShutdown = func() {}
