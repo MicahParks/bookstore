@@ -17,7 +17,7 @@ FROM scratch
 
 # Set some defaults for the host to bind to and the port to make it easier for people.
 ENV HOST 0.0.0.0
-ENV PORT 30000
+ENV PORT 8080
 
 # Copy the executable from the builder container.
 COPY --from=builder /app/bookstore /bookstore

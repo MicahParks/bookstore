@@ -19,9 +19,10 @@ func FrontendMiddleware(next http.Handler) (handler http.HandlerFunc) {
 		// If the /api prefix is seen, follow the middleware pattern.
 		if strings.HasPrefix(request.URL.Path, "/api") {
 			next.ServeHTTP(writer, request)
-		}
+		} else {
 
-		// Serve from the embedded file system.
-		fileServer.ServeHTTP(writer, request)
+			// Serve from the embedded file system.
+			fileServer.ServeHTTP(writer, request)
+		}
 	}
 }
