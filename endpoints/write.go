@@ -13,8 +13,8 @@ import (
 	"github.com/MicahParks/bookstore/storage"
 )
 
-// HandleWrite creates and POST /api/{operation}/books endpoint handler via a closure. It can perform write operations on
-// Book data.
+// HandleWrite creates and POST /api/{operation}/books endpoint handler via a closure. It can perform write operations
+// on Book data.
 func HandleWrite(logger *zap.SugaredLogger, bookStore storage.BookStore, statusStore storage.StatusStore) api.BookWriteHandlerFunc {
 	return func(params api.BookWriteParams) middleware.Responder {
 

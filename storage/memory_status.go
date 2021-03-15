@@ -54,10 +54,10 @@ func (m *MemStatus) Delete(_ context.Context, isbns []string) (err error) {
 	return nil
 }
 
-func (m *MemStatus) Read(_ context.Context, isbns []string) (statuses map[string]*models.Status, err error) {
+func (m *MemStatus) Read(_ context.Context, isbns []string) (statuses map[string]models.Status, err error) {
 
 	// Create the return map.
-	statuses = make(map[string]*models.Status, len(isbns))
+	statuses = make(map[string]models.Status, len(isbns))
 
 	// Lock the Status data for async safe use.
 	m.mux.RLock()
@@ -66,8 +66,10 @@ func (m *MemStatus) Read(_ context.Context, isbns []string) (statuses map[string
 	// Check for the empty case.
 	if len(isbns) == 0 {
 
-		// Use all Status data.
-		statuses = m.statuses
+		// Copy all Status data.
+		for isbn, status := range m.statuses {
+			statuses[isbn] = *status
+		}
 	} else {
 
 		// Iterate through the give ISBNs. Copy the requested ones.
@@ -76,7 +78,7 @@ func (m *MemStatus) Read(_ context.Context, isbns []string) (statuses map[string
 			if !ok {
 				return nil, ErrISBNNotFound
 			}
-			statuses[isbn] = status
+			statuses[isbn] = *status
 		}
 	}
 

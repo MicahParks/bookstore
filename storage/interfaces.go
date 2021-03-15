@@ -27,7 +27,7 @@ type BookStore interface {
 	Delete(ctx context.Context, isbns []string) (err error)
 
 	// Read reads the Book data for the given ISBNs. The error ErrISBNNotFound will be given if an ISBNs is not found.
-	Read(ctx context.Context, isbns []string) (books map[string]*models.Book, err error)
+	Read(ctx context.Context, isbns []string) (books map[string]models.Book, err error)
 
 	// Write writes the given Book data. It will return ErrISBNExists for in Insert operation where the ISBN already
 	// exists and an ErrISBNNotFound if an Update operation has an ISBN that doesn't exist.
@@ -45,7 +45,7 @@ type StatusStore interface {
 	Delete(ctx context.Context, isbns []string) (err error)
 
 	// Read reads the Status data for the given ISBNs. The error ErrISBNNotFound will be given if an ISBN is not found.
-	Read(ctx context.Context, isbns []string) (books map[string]*models.Status, err error)
+	Read(ctx context.Context, isbns []string) (books map[string]models.Status, err error)
 
 	// Write writes the given Status data. It will return ErrISBNExists for in Insert operation where the ISBN already
 	// exists and an ErrISBNNotFound if an Update operation has an ISBN that doesn't exist.
