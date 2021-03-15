@@ -9,4 +9,5 @@
 - [ ] Auto sort by status date value.
 - [ ] ISBN validation.
 - [ ] Make default timeout configurable.
+- [ ] Allow for multiple books with the same ISBN to be added to the library. Would put in models.Status structure.
 - [ ] Don't reload the whole bookstore on the frontend during a refresh.

@@ -20,7 +20,7 @@ import (
 type History struct {
 
 	// history
-	History []*Status `json:"history"`
+	History []Status `json:"history"`
 
 	// isbn
 	Isbn string `json:"isbn,omitempty"`
@@ -46,17 +46,12 @@ func (m *History) validateHistory(formats strfmt.Registry) error {
 	}
 
 	for i := 0; i < len(m.History); i++ {
-		if swag.IsZero(m.History[i]) { // not required
-			continue
-		}
 
-		if m.History[i] != nil {
-			if err := m.History[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName("history" + "." + strconv.Itoa(i))
-				}
-				return err
+		if err := m.History[i].Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("history" + "." + strconv.Itoa(i))
 			}
+			return err
 		}
 
 	}
@@ -82,13 +77,11 @@ func (m *History) contextValidateHistory(ctx context.Context, formats strfmt.Reg
 
 	for i := 0; i < len(m.History); i++ {
 
-		if m.History[i] != nil {
-			if err := m.History[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName("history" + "." + strconv.Itoa(i))
-				}
-				return err
+		if err := m.History[i].ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("history" + "." + strconv.Itoa(i))
 			}
+			return err
 		}
 
 	}

@@ -275,6 +275,7 @@ definitions:
         format: "date-time"
       type:
         $ref: "#/definitions/StatusType"
+    x-nullable: false
 
   # Enum for types of status changes.
   StatusType:

@@ -396,7 +396,8 @@ func init() {
         "type": {
           "$ref": "#/definitions/StatusType"
         }
-      }
+      },
+      "x-nullable": false
     },
     "StatusType": {
       "type": "string",
@@ -797,7 +798,8 @@ func init() {
         "type": {
           "$ref": "#/definitions/StatusType"
         }
-      }
+      },
+      "x-nullable": false
     },
     "StatusType": {
       "type": "string",

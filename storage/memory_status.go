@@ -9,14 +9,14 @@ import (
 
 // MemStatus is a StatusStore implementation that stores everything in a Go map in memory.
 type MemStatus struct {
-	statuses map[string]*models.Status
+	statuses map[string]*models.History
 	mux      sync.RWMutex
 }
 
 // NewMemStatus creates a new MemStatus.
 func NewMemStatus() (statusStore StatusStore) {
 	return &MemStatus{
-		statuses: make(map[string]*models.Status),
+		statuses: make(map[string]*models.History),
 	}
 }
 
@@ -54,10 +54,11 @@ func (m *MemStatus) Delete(_ context.Context, isbns []string) (err error) {
 	return nil
 }
 
-func (m *MemStatus) Read(_ context.Context, isbns []string) (statuses map[string]models.Status, err error) {
+// TODO method function comments.
+func (m *MemStatus) Read(_ context.Context, isbns []string) (statuses map[string]models.History, err error) {
 
 	// Create the return map.
-	statuses = make(map[string]models.Status, len(isbns))
+	statuses = make(map[string]models.History, len(isbns))
 
 	// Lock the Status data for async safe use.
 	m.mux.RLock()
@@ -85,7 +86,7 @@ func (m *MemStatus) Read(_ context.Context, isbns []string) (statuses map[string
 	return statuses, nil
 }
 
-func (m *MemStatus) Write(_ context.Context, statuses map[string]models.Status, operation WriteOperation) (err error) {
+func (m *MemStatus) Write(_ context.Context, statuses map[string]models.History, operation WriteOperation) (err error) {
 
 	// Lock the Status data for async safe use.
 	m.mux.Lock()
@@ -116,5 +117,5 @@ func (m *MemStatus) Write(_ context.Context, statuses map[string]models.Status, 
 func (m *MemStatus) deleteAll() {
 
 	// Reassign the Status data so it's take by the garbage collector.
-	m.statuses = make(map[string]*models.Status)
+	m.statuses = make(map[string]*models.History)
 }

@@ -62,16 +62,19 @@ func HandleWrite(logger *zap.SugaredLogger, bookStore storage.BookStore, statusS
 		}
 
 		// Get the current system time.
-		now := time.Now()
+		now := strfmt.DateTime(time.Now())
 
 		// Create the map of status.
-		statuses := make(map[string]models.Status, len(params.Books))
+		statuses := make(map[string]models.History, len(params.Books))
 
-		// Iterate through the given books, mark their status as acquired.
+		// Iterate through the given books, create their historical statuses.
 		for _, book := range params.Books {
-			statuses[book.ISBN] = models.Status{
-				Time: strfmt.DateTime(now),
-				Type: models.StatusTypeAcquired,
+			statuses[book.ISBN] = models.History{
+				History: []models.Status{{
+					Time: now,
+					Type: models.StatusTypeAcquired,
+				}},
+				Isbn: book.ISBN,
 			}
 		}
 
