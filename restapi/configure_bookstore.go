@@ -13,6 +13,7 @@ import (
 	"github.com/go-openapi/runtime"
 
 	"github.com/MicahParks/bookstore/endpoints"
+	"github.com/MicahParks/bookstore/middleware"
 	"github.com/MicahParks/bookstore/restapi/operations"
 	"github.com/MicahParks/bookstore/storage"
 )
@@ -87,5 +88,5 @@ func setupMiddlewares(handler http.Handler) http.Handler {
 // The middleware configuration happens before anything, this middleware also applies to serving the swagger.json document.
 // So this is a good place to plug in a panic handling middleware, logging and metrics.
 func setupGlobalMiddleware(handler http.Handler) http.Handler {
-	return handler
+	return middleware.FrontendMiddleware(handler)
 }
