@@ -49,7 +49,7 @@ func HandleCheckout(logger *zap.SugaredLogger, statusStore storage.StatusStore) 
 
 			// Confirm the latest status has it checked out.
 			statusType := history[len(history)-1].Type
-			if statusType != models.StatusTypeCheckout && statusType != models.StatusTypeAcquired {
+			if statusType != models.StatusTypeCheckin && statusType != models.StatusTypeAcquired {
 				return cantCheckout()
 			}
 		}
