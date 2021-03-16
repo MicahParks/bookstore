@@ -6,10 +6,6 @@ import (
 	"crypto/tls"
 	"log"
 	"net/http"
-	"time"
-
-	"github.com/didip/tollbooth"
-	"github.com/didip/tollbooth/limiter"
 
 	"go.uber.org/zap"
 
@@ -91,14 +87,8 @@ func setupMiddlewares(handler http.Handler) http.Handler {
 // So this is a good place to plug in a panic handling middleware, logging and metrics.
 func setupGlobalMiddleware(handler http.Handler) http.Handler {
 
-	// Create the rate limiter
-	limit := tollbooth.NewLimiter(.2, &limiter.ExpirableOptions{DefaultExpirationTTL: time.Hour})
-
-	// Determine the rate limiter source from the IP reported by the proxy.
-	limit.SetIPLookups([]string{"X-Forwarded-For"})
-
 	// Create the middleware to serve the frontend assets.
-	frontend, err := middleware.FrontendMiddleware(tollbooth.LimitHandler(limit, handler))
+	frontend, err := middleware.FrontendMiddleware(handler)
 	if err != nil {
 		log.Fatalf("Failed to create frontend middleware.\nError: %s", err.Error())
 	}
