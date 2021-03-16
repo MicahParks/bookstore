@@ -47,7 +47,7 @@ func HandleCheckout(logger *zap.SugaredLogger, statusStore storage.StatusStore) 
 			// Confirm the ISBN has historical statuses.
 			history := statuses[isbn].History
 
-			// Confirm the latest status has it checked out.
+			// Confirm the latest status has it checked in or acquired.
 			statusType := history[len(history)-1].Type
 			if statusType != models.StatusTypeCheckin && statusType != models.StatusTypeAcquired {
 				return cantCheckout()

@@ -106,6 +106,9 @@ func (m *MemStatus) Write(_ context.Context, statuses map[string]models.History,
 			}
 		}
 
+		// Prevent a leaky buffer.
+		status := status
+
 		// Assign the Status data to the ISBN.
 		m.statuses[isbn] = &status
 	}

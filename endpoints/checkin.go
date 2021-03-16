@@ -48,7 +48,8 @@ func HandleCheckin(logger *zap.SugaredLogger, statusStore storage.StatusStore) a
 			history := statuses[isbn].History
 
 			// Confirm the latest status has it checked out.
-			if history[len(history)-1].Type != models.StatusTypeCheckout {
+			latestStatus := history[len(history)-1].Type
+			if latestStatus != models.StatusTypeCheckout {
 				return cantCheckin()
 			}
 		}

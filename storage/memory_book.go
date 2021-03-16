@@ -105,6 +105,9 @@ func (m *MemBook) Write(_ context.Context, books []models.Book, operation WriteO
 			}
 		}
 
+		// Prevent a leaky buffer.
+		book := book
+
 		// Assign the Book data to the ISBN.
 		m.books[book.ISBN] = &book
 	}

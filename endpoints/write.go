@@ -29,17 +29,23 @@ func HandleWrite(logger *zap.SugaredLogger, bookStore storage.BookStore, statusS
 
 		// Determine the type of write operation.
 		var operation storage.WriteOperation
-		switch params.Operation {
-		case "insert":
-			operation = storage.Insert
-		case "update":
-			operation = storage.Update
-		case "upsert":
-			operation = storage.Upsert
+		var err error
+		if operation, err = operation.FromString(params.Operation); err != nil {
+
+			// Log the error.
+			msg := "Failed to convert WriteOperation to enum. goswagger should have prevented this."
+			logger.Infow(msg,
+				"error", err.Error(),
+			)
+
+			// Report the error to the client.
+			//
+			// Typically don't show internal error message, but this is for speed.
+			return errorResponse(422, msg+": "+err.Error(), &api.BookWriteDefault{})
 		}
 
 		// Write the Book data to the BookStore.
-		if err := bookStore.Write(ctx, params.Books, operation); err != nil {
+		if err = bookStore.Write(ctx, params.Books, operation); err != nil {
 
 			// Log the error.
 			msg := "Failed to write Book data."
