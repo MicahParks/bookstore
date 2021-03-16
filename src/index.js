@@ -1,4 +1,4 @@
 import SwaggerClient from 'swagger-client';
 
-// TODO This is a cheap and easy way to get access to the dependency. Doesn't seem to be the right way...
+// Attach the only needed asset to the window so it can be used in the global scope. Quick and easy, not great though.
 window.SwaggerClient = SwaggerClient;
