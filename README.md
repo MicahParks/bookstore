@@ -7,6 +7,7 @@
 - [ ] Introduce users, an identity provider, authentication, and authorization.
 - [ ] Implement storage backend interfaces in persistent storage (non-memory).
 - [ ] Auto sort by status date value.
+- [ ] Write Go tests and Postman tests.
 - [ ] ISBN validation.
 - [ ] Use a frontend JavaScript framework (Vue).
 - [ ] Make default timeout configurable.
