@@ -34,7 +34,7 @@ type BookStore interface {
 	Write(ctx context.Context, books []models.Book, operation WriteOperation) (err error)
 }
 
-// StoreStore is the Status data storage interface. It allows for Book data storage operations without needing to know how
+// StatusStore is the Status data storage interface. It allows for Book data storage operations without needing to know how
 // the Book data are stored.
 type StatusStore interface {
 
