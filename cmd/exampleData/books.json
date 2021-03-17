@@ -1,0 +1,155 @@
+{
+  "0123456789": {
+    "book": {
+      "author": "Count von Count",
+      "description": "One, Two, Three, oh! Four, Five...",
+      "isbn": "0123456789",
+      "title": "Counting for Dummies"
+    },
+    "quantity": 4
+  },
+  "5250734166": {
+    "book": {
+      "author": "Beate Kuhn",
+      "description": "It's like pottery, but gross.",
+      "isbn": "5250734166",
+      "title": "Hairy Pottery"
+    },
+    "quantity": 1
+  },
+  "6436417757": {
+    "book": {
+      "author": "Hunter Decker",
+      "description": "Young Hunter Evergreen blames pita bread.",
+      "isbn": "6436417757",
+      "title": "Hunter Blames"
+    },
+    "quantity": 15
+  },
+  "1799418197": {
+    "book": {
+      "author": "Charlotte Williams",
+      "description": "She's more of a backend programmer...",
+      "isbn": "1799418197",
+      "title": "Charlotte's Website"
+    },
+    "quantity": 8
+  },
+  "3370758320": {
+    "book": {
+      "author": "Bryan Fitzpatrick",
+      "description": "A book about swimming or something.",
+      "isbn": "3370758320",
+      "title": "The Great Gasping"
+    },
+    "quantity": 6
+  },
+  "8152917315": {
+    "book": {
+      "author": "Ernesto Jimenez",
+      "description": "Fine! I'll make my own testing framework!",
+      "isbn": "8152917315",
+      "title": "The Test Runner"
+    },
+    "quantity": 2
+  },
+  "2857392782": {
+    "book": {
+      "author": "Bezos Himself",
+      "description": "For when you feel like you have too much bandwidth.",
+      "isbn": "2857392782",
+      "title": "Lord of the Ring Doorbells"
+    },
+    "quantity": 8
+  },
+  "9885345284": {
+    "book": {
+      "author": "Edward Madoff",
+      "description": "You submitted your JIRA ticket in the wrong place. Closed.",
+      "isbn": "9885345284",
+      "title": "The Admins of Wrath"
+    },
+    "quantity": 2
+  },
+  "8214346234": {
+    "book": {
+      "author": "Xander Jones",
+      "description": "And you thought bugs were bad.",
+      "isbn": "8214346234",
+      "title": "A Wrinkle in Code"
+    },
+    "quantity": 4
+  },
+  "7299519789": {
+    "book": {
+      "author": "Jay Wright Forrester",
+      "description": "It's just a nicer number.",
+      "isbn": "7299519789",
+      "title": "Catch-16"
+    },
+    "quantity": 16
+  },
+  "4994736553": {
+    "book": {
+      "author": "Theodor Geisel",
+      "description": "My rug store should have updated Wordpress.",
+      "isbn": "4994736553",
+      "title": "The Bug in the Rug"
+    },
+    "quantity": 3
+  },
+  "9945681883": {
+    "book": {
+      "author": "Harris Northrop",
+      "description": "Yeah, the money is good, but is it worth pain?",
+      "isbn": "9945681883",
+      "title": "Purse Jackson and the Government's budget"
+    },
+    "quantity": 15
+  },
+  "5027505712": {
+    "book": {
+      "author": "Michael Bond",
+      "description": "Why are there 7 different ways to add padding?.",
+      "isbn": "5027505712",
+      "title": "Paddington Margins"
+    },
+    "quantity": 15
+  },
+  "4994736553": {
+    "book": {
+      "author": "Theodor Geisel",
+      "description": "My rug store should have updated Wordpress.",
+      "isbn": "4994736553",
+      "title": "The Bug in the Rug"
+    },
+    "quantity": 15
+  },
+  "3960169417": {
+    "book": {
+      "author": "Ajay Bhatt",
+      "description": "On the fritz? No way.",
+      "isbn": "3960169417",
+      "title": "The Magic Serial Bus"
+    },
+    "quantity": 15
+  },
+  "7260351814": {
+    "book": {
+      "author": "Carolyn Keene",
+      "description": "I don't even know what default credentials means.",
+      "isbn": "7260351814",
+      "title": "Nancy Drupal"
+    },
+    "quantity": 15
+  },
+  "2186951821": {
+    "book": {
+      "author": "Dennis Ritchie",
+      "description": "It's God's programming language.",
+      "isbn": "2186951821",
+      "title": "The old man and the C"
+    },
+    "quantity": 15
+  }
+}

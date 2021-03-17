@@ -85,6 +85,7 @@ pleasing graphical format at [this link](https://bookstore.micahparks.com/docs).
 - [ ] Add an "On Hold" status and features around that.
 - [ ] Form validation on frontend.
 - [ ] Allow for bulk transactions through the web frontend (Already on the backend).
+- [ ] Handle large strings on the frontend table.
 - [ ] Add search functionality.
 - [ ] Bulk, per ISBN, transactions for checkin and checkout.
 - [ ] Better error messages to users.
