@@ -89,19 +89,10 @@
     },
     "quantity": 16
   },
-  "4994736553": {
-    "book": {
-      "author": "Theodor Geisel",
-      "description": "My rug store should have updated Wordpress.",
-      "isbn": "4994736553",
-      "title": "The Bug in the Rug"
-    },
-    "quantity": 3
-  },
   "9945681883": {
     "book": {
       "author": "Harris Northrop",
-      "description": "Yeah, the money is good, but is it worth pain?",
+      "description": "So you want me to set up a private GitLab? $100,000 please.",
       "isbn": "9945681883",
       "title": "Purse Jackson and the Government's budget"
     },
