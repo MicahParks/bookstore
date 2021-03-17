@@ -13,8 +13,8 @@ info:
   version: "0.0.1"
 
 schemes:
-  - "http"
   - "https"
+  - "http"
 
 tags:
   - description: "Endpoints that perform actions on bookstore data."
