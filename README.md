@@ -6,22 +6,25 @@ The original challenge, in `challenge.md`, called it a "library management syste
 the "bookstore challenge".
 
 This challenge is deployed live to [https://bookstore.micahparks.com/](https://bookstore.micahparks.com/). View the
-specification docs [here](https://bookstore.micahparks.com/docs).
+OpenAPI/swagger specification and docs [here](https://bookstore.micahparks.com/docs).
 
 ## Design
-
-The service is designed using an OpenAPI/Swagger specification. Check out the docs
-[here](https://bookstore.micahparks.com/docs).
 
 ### The backend:
 
 The backend is a Golang HTTP REST API. Its stub is generated from the swagger specification using
 [`goswagger`](https://github.com/go-swagger/go-swagger).
 
+Data storage is interacted with via a Go interface, to allow for multiple implementations.
+
+All endpoints are placed under the `/api/` prefix. Any other non-documentation paths will file serve from frontend assets.
+
 The program is put into a Docker image with the base image [scratch](https://hub.docker.com/_/scratch/).
 
 Deployed live, this sits on my personal VPS alongside other services using `docker-compose` behind a
 [Caddy](https://caddyserver.com/) web server serving as a reverse proxy and TLS termination point.
+
+The portable, statically linked executable is a bit less than 11MB. As a compressed docker image, it is 3.84MB.
 
 ### The frontend:
 
