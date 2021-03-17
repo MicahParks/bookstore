@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"io/fs"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -37,6 +38,9 @@ func FrontendMiddleware(next http.Handler) (handler http.HandlerFunc, err error)
 		if strings.HasPrefix(path, "/api") || path == "/swagger.json" || path == "/docs" {
 			next.ServeHTTP(writer, request)
 		} else {
+
+			// Log the request so I can see if people are actually observing the coding challenge.
+			log.Printf(path)
 
 			// Serve from the embedded file system.
 			fileServer.ServeHTTP(writer, request)

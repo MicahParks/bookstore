@@ -8,6 +8,24 @@ the "bookstore challenge".
 This challenge is deployed live to [https://bookstore.micahparks.com/](https://bookstore.micahparks.com/). View the
 OpenAPI/swagger specification and docs [here](https://bookstore.micahparks.com/docs).
 
+## Features
+
+* CRUD management of Book data.
+* Web interface for Book data and Status data.
+* Checking in and checking out books through the web interface.
+* Historical Status data.
+* OpenAPI/swagger 2.0 specification file for formatted docs, code generators, and good communication.
+* Exporting all data as JSON or current statuses as CSV.
+* Type safety around API on the backend. (Input and output validation.)
+* Bulk API transactions. The spec is written with batch processing in mind.
+* Switch between embedded frontend assets and live frontend assets by specifying a directory with the `FRONTEND_DIR`
+  environment variable.
+* Single, statically linked binary with all assets.
+* A Docker image.
+* Deployed live right now! [https://bookstore.micahparks.com/](https://bookstore.micahparks.com/)
+* A video walkthrough for the lazy (Firefox may not play sound for video URLs):
+  [https://bookstore.micahparks.com/demo.mp4](https://bookstore.micahparks.com/demo.mp4)
+
 ## Design
 
 ### The backend:
@@ -25,7 +43,7 @@ The program is put into a Docker image with the base image [scratch](https://hub
 Deployed live, this sits on my personal VPS alongside other services using `docker-compose` behind a
 [Caddy](https://caddyserver.com/) web server serving as a reverse proxy and TLS termination point.
 
-The portable, statically linked executable is a bit less than 11MB. As a compressed docker image, it is 3.84MB.
+The portable, statically linked executable.
 
 ### The frontend:
 
@@ -69,13 +87,6 @@ The `storage` directory contains the interface for backend storage and implement
 
 The `swagger.yml` file is the swagger 2.0 specification file mentioned previously. It's contents can be viewed in a more
 pleasing graphical format at [this link](https://bookstore.micahparks.com/docs).
-
-## Features
-
-* Exporting all data as JSON or current statuses as CSV.
-* Type safety around API on the backend. (Input and output validation.)
-* Switch between embedded frontend assets and live frontend assets by specifying a directory with the `FRONTEND_DIR`
-  environment variable.
 
 ## Screenshots
 
