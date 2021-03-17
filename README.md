@@ -17,7 +17,8 @@ The backend is a Golang HTTP REST API. Its stub is generated from the swagger sp
 
 Data storage is interacted with via a Go interface, to allow for multiple implementations.
 
-All endpoints are placed under the `/api/` prefix. Any other non-documentation paths will file serve from frontend assets.
+All endpoints are placed under the `/api/` prefix. Any other non-documentation paths will file serve from frontend
+assets.
 
 The program is put into a Docker image with the base image [scratch](https://hub.docker.com/_/scratch/).
 
@@ -76,6 +77,24 @@ pleasing graphical format at [this link](https://bookstore.micahparks.com/docs).
 * Switch between embedded frontend assets and live frontend assets by specifying a directory with the `FRONTEND_DIR`
   environment variable.
 
+## Screenshots
+
+The main screen, a table:
+
+![](screenshots/table.png)
+
+Form submission for Book data:
+
+![](screenshots/bookForm.png)
+
+Delete confirmation dialog:
+
+![](screenshots/deleteConfirmation.png)
+
+Fixed bottom navbar with error present:
+
+![](screenshots/navbarWithError.png)
+
 ## Improvements
 
 - [ ] Write Go tests and Postman tests.
@@ -90,6 +109,7 @@ pleasing graphical format at [this link](https://bookstore.micahparks.com/docs).
 - [ ] Bulk, per ISBN, transactions for checkin and checkout.
 - [ ] Better error messages to users.
 - [ ] Don't reload the whole bookstore on the frontend during a refresh. (Backend is capable of this).
+- [ ] Format times in a prettier way.
 - [ ] Make the web interface prettier.
 - [ ] Allow users to edit the number of books with the same ISBN.
 - [ ] Use a frontend JavaScript framework (Vue).
