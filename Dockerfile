@@ -21,4 +21,4 @@ ENV PORT 8080
 
 # Copy the executable from the builder container.
 COPY --from=builder /app/bookstore /bookstore
-CMD ["/bookstore"]
+CMD ["/bookstore", "--scheme=http"]

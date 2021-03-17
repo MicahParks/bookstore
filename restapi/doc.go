@@ -5,7 +5,8 @@
 //  A bookstore coding challenge
 //  Schemes:
 //    http
-//  Host: localhost:8080
+//    https
+//  Host: bookstore.micahparks.com
 //  BasePath: /
 //  Version: 0.0.1
 //  License: MIT https://opensource.org/licenses/MIT

@@ -2,7 +2,7 @@ swagger: "2.0"
 
 basePath: "/"
 
-host: "localhost:8080"
+host: "bookstore.micahparks.com"
 
 info:
   description: "A bookstore coding challenge"
@@ -14,6 +14,7 @@ info:
 
 schemes:
   - "http"
+  - "https"
 
 tags:
   - description: "Endpoints that perform actions on bookstore data."
