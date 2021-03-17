@@ -3,6 +3,8 @@ let authorElem = document.getElementById("bookAuthor");
 let descriptionElem = document.getElementById("bookDescription");
 let isbnElem = document.getElementById("bookIsbn");
 let titleElem = document.getElementById("bookTitle");
+let quantityElem = document.getElementById("bookQuantity");
+let quantityDiv = document.getElementById("quantityDiv");
 
 function clearForm() {
 
@@ -11,6 +13,8 @@ function clearForm() {
     descriptionElem.value = "";
     isbnElem.value = "";
     titleElem.value = "";
+    quantityDiv.style.visibility = 'visible';
+    quantityElem.value = "1";
 }
 
 function populateForm(book) {
@@ -20,6 +24,7 @@ function populateForm(book) {
     descriptionElem.value = book.description;
     isbnElem.value = book.isbn;
     titleElem.value = book.title;
+    quantityDiv.style.visibility = 'hidden';
 }
 
 async function submitForm(e) {
@@ -38,8 +43,14 @@ async function submitForm(e) {
         title: titleElem.value
     };
 
+    let bookQuantities = {};
+    bookQuantities[book.isbn] = {
+        book: book,
+        quantity: Number(quantityElem.value),
+    };
+
     // Write the books.
-    writeBooks([book]).then(function () {
+    writeBooks(bookQuantities).then(function () {
 
         // Repopulate the table.
         buildTable();

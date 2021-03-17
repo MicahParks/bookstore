@@ -9,7 +9,7 @@ async function readHistory(isbns) {
         )
         .then(
             bookHistoryResult => history = JSON.parse(bookHistoryResult.data),
-            reason => console.error('failed api call: ' + reason)
+            reason => showAlert(reason)
         );
     await promise;
 

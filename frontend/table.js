@@ -19,7 +19,7 @@ async function refresh(isbns) {
         )
         .then(
             bookStatusResult => tableData.statuses = JSON.parse(bookStatusResult.data),
-            reason => console.error('failed api call: ' + reason)
+            reason => showAlert(reason)
         );
     await promise;
 
@@ -35,42 +35,45 @@ async function buildTable() {
     return refresh(null).then(function (tableData) {
 
         // Iterate through all books.
+        let index = 0;
         for (const [isbn, book] of Object.entries(tableData.books)) {
 
             // Create a new row for the book based off of the template.
             let row = rowTemplate.cloneNode(true);
 
             // Assign the row's ID to the ISBN.
-            row.id = isbn;
+            row.id = 'row' + index;
+            index++;
 
             // Get the Status data for the ISBN.
             let status = tableData.statuses[isbn]
 
             // Decide what the status button should be.
-            let button = document.createElement("button");
-            button.type = "button";
-            button.disabled = true;
-            switch (status.type) {
-                case "acquired":
-                    button.classList.add("btn");
-                    button.classList.add("btn-success");
-                    button.innerHTML = "Acquired";
-                    break;
-                case "checkin":
-                    button.classList.add("btn");
-                    button.classList.add("btn-primary");
-                    button.innerHTML = "Checked in";
-                    break;
-                case "checkout":
-                    button.classList.add("btn");
-                    button.classList.add("btn-secondary");
-                    button.innerHTML = "Checked out";
-                    break;
+            let available = status.available;
+            let unavailable = status.unavailable;
+            if (available === undefined) {
+                available = 0;
             }
+            if (unavailable === undefined) {
+                unavailable = 0;
+            }
+            let availableButton = document.createElement("button");
+            availableButton.type = "button";
+            availableButton.disabled = true;
+            availableButton.classList.add("btn");
+            availableButton.classList.add("btn-success");
+            availableButton.innerHTML = available;
+            let unavailableButton = document.createElement("button");
+            unavailableButton.type = "button";
+            unavailableButton.disabled = true;
+            unavailableButton.classList.add("btn");
+            unavailableButton.classList.add("btn-danger");
+            unavailableButton.innerHTML = unavailable;
 
             // Assign the columns for the row.
             row.cells[0].innerHTML = isbn;
-            row.cells[1].appendChild(button);
+            row.cells[1].appendChild(availableButton);
+            row.cells[1].appendChild(unavailableButton);
             row.cells[2].innerHTML = book.title;
             row.cells[3].innerHTML = book.author;
             row.cells[4].innerHTML = book.description;

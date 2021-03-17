@@ -139,14 +139,22 @@ func init() {
         "operationId": "bookWrite",
         "parameters": [
           {
-            "description": "The array of books to insert, update, or upsert to the library.",
-            "name": "books",
+            "description": "The mapping of ISBNs to books and their quantities to insert, update, or upsert to the library.",
+            "name": "bookQuantities",
             "in": "body",
             "required": true,
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Book"
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "book": {
+                    "$ref": "#/definitions/Book"
+                  },
+                  "quantity": {
+                    "type": "integer",
+                    "format": "uint64"
+                  }
+                }
               }
             }
           },
@@ -238,6 +246,32 @@ func init() {
         "responses": {
           "200": {
             "description": "The books have been checked out."
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/csv": {
+      "post": {
+        "produces": [
+          "text/plain"
+        ],
+        "tags": [
+          "api"
+        ],
+        "summary": "Get a CSV file for the Book data and most recent Status data of all books.",
+        "operationId": "bookCSV",
+        "responses": {
+          "200": {
+            "description": "The CSV file containing the Book data and most recent Status data of all books.",
+            "schema": {
+              "type": "file"
+            }
           },
           "default": {
             "description": "Unexpected error.",
@@ -389,12 +423,20 @@ func init() {
     },
     "Status": {
       "properties": {
+        "available": {
+          "type": "integer",
+          "format": "uint64"
+        },
         "time": {
           "type": "string",
           "format": "date-time"
         },
         "type": {
           "$ref": "#/definitions/StatusType"
+        },
+        "unavailable": {
+          "type": "integer",
+          "format": "uint64"
         }
       },
       "x-nullable": false
@@ -541,14 +583,13 @@ func init() {
         "operationId": "bookWrite",
         "parameters": [
           {
-            "description": "The array of books to insert, update, or upsert to the library.",
-            "name": "books",
+            "description": "The mapping of ISBNs to books and their quantities to insert, update, or upsert to the library.",
+            "name": "bookQuantities",
             "in": "body",
             "required": true,
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Book"
+              "additionalProperties": {
+                "$ref": "#/definitions/BookWriteParamsBodyAnon"
               }
             }
           },
@@ -640,6 +681,32 @@ func init() {
         "responses": {
           "200": {
             "description": "The books have been checked out."
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/csv": {
+      "post": {
+        "produces": [
+          "text/plain"
+        ],
+        "tags": [
+          "api"
+        ],
+        "summary": "Get a CSV file for the Book data and most recent Status data of all books.",
+        "operationId": "bookCSV",
+        "responses": {
+          "200": {
+            "description": "The CSV file containing the Book data and most recent Status data of all books.",
+            "schema": {
+              "type": "file"
+            }
           },
           "default": {
             "description": "Unexpected error.",
@@ -758,6 +825,18 @@ func init() {
       },
       "x-nullable": false
     },
+    "BookWriteParamsBodyAnon": {
+      "type": "object",
+      "properties": {
+        "book": {
+          "$ref": "#/definitions/Book"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "uint64"
+        }
+      }
+    },
     "Error": {
       "type": "object",
       "required": [
@@ -791,12 +870,20 @@ func init() {
     },
     "Status": {
       "properties": {
+        "available": {
+          "type": "integer",
+          "format": "uint64"
+        },
         "time": {
           "type": "string",
           "format": "date-time"
         },
         "type": {
           "$ref": "#/definitions/StatusType"
+        },
+        "unavailable": {
+          "type": "integer",
+          "format": "uint64"
         }
       },
       "x-nullable": false

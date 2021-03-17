@@ -6,9 +6,15 @@ package api
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"net/http"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
+
+	"github.com/MicahParks/bookstore/models"
 )
 
 // BookWriteHandlerFunc turns a function with the right signature into a book write handler
@@ -53,4 +59,89 @@ func (o *BookWrite) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	res := o.Handler.Handle(Params) // actually handle the request
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
+}
+
+// BookWriteParamsBodyAnon book write params body anon
+//
+// swagger:model BookWriteParamsBodyAnon
+type BookWriteParamsBodyAnon struct {
+
+	// book
+	Book models.Book `json:"book,omitempty"`
+
+	// quantity
+	Quantity uint64 `json:"quantity,omitempty"`
+}
+
+// Validate validates this book write params body anon
+func (o *BookWriteParamsBodyAnon) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateBook(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *BookWriteParamsBodyAnon) validateBook(formats strfmt.Registry) error {
+	if swag.IsZero(o.Book) { // not required
+		return nil
+	}
+
+	if err := o.Book.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("book")
+		}
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this book write params body anon based on the context it is used
+func (o *BookWriteParamsBodyAnon) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateBook(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *BookWriteParamsBodyAnon) contextValidateBook(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := o.Book.ContextValidate(ctx, formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("book")
+		}
+		return err
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *BookWriteParamsBodyAnon) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *BookWriteParamsBodyAnon) UnmarshalBinary(b []byte) error {
+	var res BookWriteParamsBodyAnon
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
 }

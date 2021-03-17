@@ -9,24 +9,24 @@ async function readBooks(isbns) {
         )
         .then(
             bookReadResult => books = JSON.parse(bookReadResult.data),
-            reason => console.error('failed api call: ' + reason)
+            reason => showAlert(reason)
         );
     await promise;
 
     return books;
 }
 
-async function writeBooks(books) {
+async function writeBooks(bookQuantities) {
 
     // Write the book data.
     return swaggerClient
         .then(
-            client => client.apis.api.bookWrite({books: books, operation: "upsert"}),
+            client => client.apis.api.bookWrite({bookQuantities: bookQuantities, operation: "upsert"}),
             reason => console.error('failed to load the spec: ' + reason)
         )
         .then(
             bookWriteResult => { /* No operation.*/
             },
-            reason => console.error('failed api call: ' + reason)
+            reason => showAlert(reason)
         );
 }

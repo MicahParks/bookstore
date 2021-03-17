@@ -14,8 +14,6 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
-
-	"github.com/MicahParks/bookstore/models"
 )
 
 // NewBookWriteParams creates a new BookWriteParams object
@@ -35,11 +33,11 @@ type BookWriteParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
-	/*The array of books to insert, update, or upsert to the library.
+	/*The mapping of ISBNs to books and their quantities to insert, update, or upsert to the library.
 	  Required: true
 	  In: body
 	*/
-	Books []models.Book
+	BookQuantities map[string]BookWriteParamsBodyAnon
 	/*The write operation to perform with the book data.
 	  Required: true
 	  In: path
@@ -58,29 +56,30 @@ func (o *BookWriteParams) BindRequest(r *http.Request, route *middleware.Matched
 
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
-		var body []models.Book
+		var body map[string]BookWriteParamsBodyAnon
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			if err == io.EOF {
-				res = append(res, errors.Required("books", "body", ""))
+				res = append(res, errors.Required("bookQuantities", "body", ""))
 			} else {
-				res = append(res, errors.NewParseError("books", "body", "", err))
+				res = append(res, errors.NewParseError("bookQuantities", "body", "", err))
 			}
 		} else {
-
-			// validate array of body objects
-			for i := range body {
-				if err := body[i].Validate(route.Formats); err != nil {
-					res = append(res, err)
-					break
+			// validate map of body objects
+			for k := range body {
+				if val, ok := body[k]; ok {
+					if err := val.Validate(route.Formats); err != nil {
+						res = append(res, err)
+						break
+					}
 				}
 			}
 
 			if len(res) == 0 {
-				o.Books = body
+				o.BookQuantities = body
 			}
 		}
 	} else {
-		res = append(res, errors.Required("books", "body", ""))
+		res = append(res, errors.Required("bookQuantities", "body", ""))
 	}
 
 	rOperation, rhkOperation, _ := route.Params.GetOK("operation")

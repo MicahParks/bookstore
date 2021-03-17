@@ -12,7 +12,7 @@ async function checkin(button) {
         .then(
             bookCheckinResult => { /* No operation.*/
             },
-            reason => console.error('failed api call: ' + reason)
+            reason => showAlert(reason)
         );
 }
 
@@ -30,6 +30,6 @@ async function checkout(button) {
         .then(
             bookCheckoutResult => { /* No operation.*/
             },
-            reason => console.error('failed api call: ' + reason)
+            reason => showAlert(reason)
         );
 }

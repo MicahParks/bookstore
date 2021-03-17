@@ -15,7 +15,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags "-s -w" -o 
 # The actual image being produced.
 FROM scratch
 
-# Set some defaults for the host to bind to and the port to make it easier for people.
+# Set some defaults for the host to bind to and the port to make it easier for the image user.
 ENV HOST 0.0.0.0
 ENV PORT 8080
 

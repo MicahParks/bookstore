@@ -32,9 +32,7 @@ func HandleRead(logger *zap.SugaredLogger, bookStore storage.BookStore) api.Book
 			)
 
 			// Report the error to the client.
-			//
-			// Typically don't show internal error message, but this is for speed.
-			return errorResponse(500, msg+": "+err.Error(), &api.BookReadDefault{})
+			return errorResponse(500, msg, &api.BookReadDefault{})
 		}
 
 		return &api.BookReadOK{

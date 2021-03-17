@@ -20,6 +20,7 @@ func NewMemBook() (bookStore BookStore) {
 	}
 }
 
+// Close closes the connection to the underlying storage.
 func (m *MemBook) Close(_ context.Context) (err error) {
 
 	// Lock the Book data for async safe use.
@@ -32,6 +33,7 @@ func (m *MemBook) Close(_ context.Context) (err error) {
 	return nil
 }
 
+// Delete deletes the Book data for the given ISBNs. There will be no error if the ISBNs are not found.
 func (m *MemBook) Delete(_ context.Context, isbns []string) (err error) {
 
 	// Lock the Book data for async safe use.
@@ -54,6 +56,7 @@ func (m *MemBook) Delete(_ context.Context, isbns []string) (err error) {
 	return nil
 }
 
+// Read reads the Book data for the given ISBNs. The error ErrISBNNotFound will be given if an ISBNs is not found.
 func (m *MemBook) Read(_ context.Context, isbns []string) (books map[string]models.Book, err error) {
 
 	// Create the return map.
@@ -85,6 +88,8 @@ func (m *MemBook) Read(_ context.Context, isbns []string) (books map[string]mode
 	return books, nil
 }
 
+// Write writes the given Book data. It will return ErrISBNExists for in Insert operation where the ISBN already
+// exists and an ErrISBNNotFound if an Update operation has an ISBN that doesn't exist.
 func (m *MemBook) Write(_ context.Context, books []models.Book, operation WriteOperation) (err error) {
 
 	// Lock the Book data for async safe use.

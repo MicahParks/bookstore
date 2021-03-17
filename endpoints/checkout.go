@@ -36,20 +36,14 @@ func HandleCheckout(logger *zap.SugaredLogger, statusStore storage.StatusStore) 
 			)
 
 			// Report the error to the client.
-			//
-			// Typically don't show internal error message, but this is for speed.
-			return errorResponse(500, msg+": "+err.Error(), &api.BookCheckoutDefault{})
+			return errorResponse(500, msg, &api.BookCheckoutDefault{})
 		}
 
 		// Check to make sure all books are currently checked in or acquired.
 		for _, isbn := range params.Isbns {
 
-			// Confirm the ISBN has historical statuses.
-			history := statuses[isbn].History
-
-			// Confirm the latest status has it checked in or acquired.
-			statusType := history[len(history)-1].Type
-			if statusType != models.StatusTypeCheckin && statusType != models.StatusTypeAcquired {
+			// Confirm the latest status has at least one unavailable.
+			if mostRecent(statuses[isbn]).Available == 0 {
 				return cantCheckout()
 			}
 		}
@@ -63,10 +57,19 @@ func HandleCheckout(logger *zap.SugaredLogger, statusStore storage.StatusStore) 
 		updatedStatuses := make(map[string]models.History)
 		for isbn, status := range statuses {
 
+			// Get the most recent status.
+			latestStatus := mostRecent(status)
+
+			// Update the availability.
+			available := latestStatus.Available - 1
+			unavailable := latestStatus.Unavailable + 1
+
 			// Add to the historical status data.
 			status.History = append(status.History, models.Status{
-				Time: now,
-				Type: models.StatusTypeCheckout,
+				Available:   available,
+				Time:        now,
+				Type:        models.StatusTypeCheckout,
+				Unavailable: unavailable,
 			})
 
 			// Update the new statuses map.
@@ -83,9 +86,7 @@ func HandleCheckout(logger *zap.SugaredLogger, statusStore storage.StatusStore) 
 			)
 
 			// Report the error to the client.
-			//
-			// Typically don't show internal error message, but this is for speed.
-			return errorResponse(500, msg+": "+err.Error(), &api.BookCheckoutDefault{})
+			return errorResponse(500, msg, &api.BookCheckoutDefault{})
 		}
 
 		return &api.BookCheckinOK{}
@@ -94,5 +95,5 @@ func HandleCheckout(logger *zap.SugaredLogger, statusStore storage.StatusStore) 
 
 // cantCheckout reports to the client that a book can't be checked in if it hasn't been checked in or acquired.
 func cantCheckout() middleware.Responder {
-	return errorResponse(422, "Cannot check in book that is not checked in or acquired.", &api.BookCheckoutDefault{})
+	return errorResponse(422, "No available books to check out.", &api.BookCheckoutDefault{})
 }

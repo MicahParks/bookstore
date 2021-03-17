@@ -19,12 +19,18 @@ import (
 // swagger:model Status
 type Status struct {
 
+	// available
+	Available uint64 `json:"available,omitempty"`
+
 	// time
 	// Format: date-time
 	Time strfmt.DateTime `json:"time,omitempty"`
 
 	// type
 	Type StatusType `json:"type,omitempty"`
+
+	// unavailable
+	Unavailable uint64 `json:"unavailable,omitempty"`
 }
 
 // Validate validates this status

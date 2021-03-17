@@ -39,14 +39,19 @@ paths:
       operationId: "bookWrite"
       summary: "Insert, update, or upsert books to the library."
       parameters:
-        - description: "The array of books to insert, update, or upsert to the library."
+        - description: "The mapping of ISBNs to books and their quantities to insert, update, or upsert to the library."
           in: "body"
-          name: "books"
+          name: "bookQuantities"
           required: true
           schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Book"
+            additionalProperties:
+              type: "object"
+              properties:
+                book:
+                  $ref: "#/definitions/Book"
+                quantity:
+                  type: "integer"
+                  format: "uint64"
         - description: "The write operation to perform with the book data."
           in: "path"
           enum:
@@ -69,7 +74,7 @@ paths:
   /api/books: # Delete and Read
     delete:
       consumes:
-        - "application/json" # TODO Need produces for when error is returned?
+        - "application/json"
       operationId: "bookDelete"
       summary: "Delete the given books."
       parameters:
@@ -159,6 +164,24 @@ paths:
       responses:
         200:
           description: "The books have been checked out."
+        default:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Error"
+      tags:
+        - "api"
+
+  /api/csv:
+    post:
+      produces:
+        - "text/plain"
+      operationId: "bookCSV"
+      summary: "Get a CSV file for the Book data and most recent Status data of all books."
+      responses:
+        200:
+          description: "The CSV file containing the Book data and most recent Status data of all books."
+          schema:
+            type: "file"
         default:
           description: "Unexpected error."
           schema:
@@ -265,15 +288,20 @@ definitions:
           $ref: "#/definitions/Status"
         x-nullable: false
 
-
   # Schema for book status change. (Getting checked in or checked out.
   Status:
     properties:
+      available:
+        type: "integer"
+        format: "uint64"
       time:
         type: "string"
         format: "date-time"
       type:
         $ref: "#/definitions/StatusType"
+      unavailable:
+        type: "integer"
+        format: "uint64"
     x-nullable: false
 
   # Enum for types of status changes.

@@ -44,9 +44,13 @@ func NewBookstoreAPI(spec *loads.Document) *BookstoreAPI {
 		JSONConsumer: runtime.JSONConsumer(),
 
 		JSONProducer: runtime.JSONProducer(),
+		TxtProducer:  runtime.TextProducer(),
 
 		SystemAliveHandler: system.AliveHandlerFunc(func(params system.AliveParams) middleware.Responder {
 			return middleware.NotImplemented("operation system.Alive has not yet been implemented")
+		}),
+		APIBookCSVHandler: apiops.BookCSVHandlerFunc(func(params apiops.BookCSVParams) middleware.Responder {
+			return middleware.NotImplemented("operation api.BookCSV has not yet been implemented")
 		}),
 		APIBookCheckinHandler: apiops.BookCheckinHandlerFunc(func(params apiops.BookCheckinParams) middleware.Responder {
 			return middleware.NotImplemented("operation api.BookCheckin has not yet been implemented")
@@ -104,9 +108,14 @@ type BookstoreAPI struct {
 	// JSONProducer registers a producer for the following mime types:
 	//   - application/json
 	JSONProducer runtime.Producer
+	// TxtProducer registers a producer for the following mime types:
+	//   - text/plain
+	TxtProducer runtime.Producer
 
 	// SystemAliveHandler sets the operation handler for the alive operation
 	SystemAliveHandler system.AliveHandler
+	// APIBookCSVHandler sets the operation handler for the book c s v operation
+	APIBookCSVHandler apiops.BookCSVHandler
 	// APIBookCheckinHandler sets the operation handler for the book checkin operation
 	APIBookCheckinHandler apiops.BookCheckinHandler
 	// APIBookCheckoutHandler sets the operation handler for the book checkout operation
@@ -197,9 +206,15 @@ func (o *BookstoreAPI) Validate() error {
 	if o.JSONProducer == nil {
 		unregistered = append(unregistered, "JSONProducer")
 	}
+	if o.TxtProducer == nil {
+		unregistered = append(unregistered, "TxtProducer")
+	}
 
 	if o.SystemAliveHandler == nil {
 		unregistered = append(unregistered, "system.AliveHandler")
+	}
+	if o.APIBookCSVHandler == nil {
+		unregistered = append(unregistered, "api.BookCSVHandler")
 	}
 	if o.APIBookCheckinHandler == nil {
 		unregistered = append(unregistered, "api.BookCheckinHandler")
@@ -270,6 +285,8 @@ func (o *BookstoreAPI) ProducersFor(mediaTypes []string) map[string]runtime.Prod
 		switch mt {
 		case "application/json":
 			result["application/json"] = o.JSONProducer
+		case "text/plain":
+			result["text/plain"] = o.TxtProducer
 		}
 
 		if p, ok := o.customProducers[mt]; ok {
@@ -314,6 +331,10 @@ func (o *BookstoreAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/api/alive"] = system.NewAlive(o.context, o.SystemAliveHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/api/csv"] = apiops.NewBookCSV(o.context, o.APIBookCSVHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}

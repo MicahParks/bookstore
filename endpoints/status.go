@@ -34,9 +34,7 @@ func HandleStatus(logger *zap.SugaredLogger, statusStore storage.StatusStore) ap
 			)
 
 			// Report the error to the client.
-			//
-			// Typically don't show internal error message, but this is for speed.
-			return errorResponse(500, msg+": "+err.Error(), &api.BookStatusDefault{})
+			return errorResponse(500, msg, &api.BookStatusDefault{})
 		}
 
 		// Get the latest statuses.

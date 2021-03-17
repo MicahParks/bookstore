@@ -20,6 +20,7 @@ func NewMemStatus() (statusStore StatusStore) {
 	}
 }
 
+// Close closes the connection to the underlying storage.
 func (m *MemStatus) Close(_ context.Context) (err error) {
 
 	// Lock the Status data for async safe use.
@@ -32,6 +33,7 @@ func (m *MemStatus) Close(_ context.Context) (err error) {
 	return nil
 }
 
+// Delete deletes the Status data for the ISBNs. There will be no error if the ISBNs are not found.
 func (m *MemStatus) Delete(_ context.Context, isbns []string) (err error) {
 
 	// Lock the Status data for async safe use.
@@ -54,7 +56,7 @@ func (m *MemStatus) Delete(_ context.Context, isbns []string) (err error) {
 	return nil
 }
 
-// TODO method function comments.
+// Read reads the Status data for the given ISBNs. The error ErrISBNNotFound will be given if an ISBN is not found.
 func (m *MemStatus) Read(_ context.Context, isbns []string) (statuses map[string]models.History, err error) {
 
 	// Create the return map.
@@ -86,6 +88,8 @@ func (m *MemStatus) Read(_ context.Context, isbns []string) (statuses map[string
 	return statuses, nil
 }
 
+// Write writes the given Status data. It will return ErrISBNExists for in Insert operation where the ISBN already
+// exists and an ErrISBNNotFound if an Update operation has an ISBN that doesn't exist.
 func (m *MemStatus) Write(_ context.Context, statuses map[string]models.History, operation WriteOperation) (err error) {
 
 	// Lock the Status data for async safe use.

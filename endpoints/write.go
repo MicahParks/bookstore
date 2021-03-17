@@ -20,7 +20,7 @@ func HandleWrite(logger *zap.SugaredLogger, bookStore storage.BookStore, statusS
 
 		// Debug info.
 		logger.Debugw("",
-			"books", params.Books,
+			"books", params.BookQuantities,
 		)
 
 		// Create a context for the request.
@@ -39,13 +39,19 @@ func HandleWrite(logger *zap.SugaredLogger, bookStore storage.BookStore, statusS
 			)
 
 			// Report the error to the client.
-			//
-			// Typically don't show internal error message, but this is for speed.
-			return errorResponse(422, msg+": "+err.Error(), &api.BookWriteDefault{})
+			return errorResponse(422, msg, &api.BookWriteDefault{})
+		}
+
+		// Create the slice of books.
+		books := make([]models.Book, len(params.BookQuantities))
+		index := 0
+		for _, bookQuantity := range params.BookQuantities {
+			books[index] = bookQuantity.Book
+			index++
 		}
 
 		// Write the Book data to the BookStore.
-		if err = bookStore.Write(ctx, params.Books, operation); err != nil {
+		if err = bookStore.Write(ctx, books, operation); err != nil {
 
 			// Log the error.
 			msg := "Failed to write Book data."
@@ -64,28 +70,31 @@ func HandleWrite(logger *zap.SugaredLogger, bookStore storage.BookStore, statusS
 			// Report the error to the client.
 			//
 			// Typically don't show internal error message, but this is for speed.
-			return errorResponse(code, msg+": "+err.Error(), &api.BookWriteDefault{})
+			return errorResponse(code, msg, &api.BookWriteDefault{})
 		}
 
 		// Get the current system time.
 		now := strfmt.DateTime(time.Now())
 
 		// Create the map of status.
-		statuses := make(map[string]models.History, len(params.Books))
+		statuses := make(map[string]models.History, len(params.BookQuantities))
 
 		// Iterate through the given books, create their historical statuses.
-		for _, book := range params.Books {
-			statuses[book.ISBN] = models.History{
+		for _, bookQuantity := range params.BookQuantities {
+			statuses[bookQuantity.Book.ISBN] = models.History{
 				History: []models.Status{{
-					Time: now,
-					Type: models.StatusTypeAcquired,
+					Available: bookQuantity.Quantity,
+					Time:      now,
+					Type:      models.StatusTypeAcquired,
 				}},
-				Isbn: book.ISBN,
+				Isbn: bookQuantity.Book.ISBN,
 			}
 		}
 
 		// Write the book statuses to the StatusStore.
-		if err := statusStore.Write(ctx, statuses, storage.Upsert); err != nil { // TODO Not always an upsert...
+		//
+		// Write operations other than storage.Upsert are possible.
+		if err = statusStore.Write(ctx, statuses, storage.Upsert); err != nil {
 
 			// Log the error.
 			msg := "Failed to update the statuses for written books."
@@ -94,9 +103,7 @@ func HandleWrite(logger *zap.SugaredLogger, bookStore storage.BookStore, statusS
 			)
 
 			// Report the error to the client.
-			//
-			// Typically don't show internal error message, but this is for speed.
-			return errorResponse(500, msg+": "+err.Error(), &api.BookWriteDefault{})
+			return errorResponse(500, msg, &api.BookWriteDefault{})
 		}
 
 		return &api.BookWriteOK{}

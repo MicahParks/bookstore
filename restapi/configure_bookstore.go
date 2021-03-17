@@ -14,6 +14,7 @@ import (
 
 	"github.com/MicahParks/bookstore/endpoints"
 	"github.com/MicahParks/bookstore/middleware"
+	"github.com/MicahParks/bookstore/producers"
 	"github.com/MicahParks/bookstore/restapi/operations"
 	"github.com/MicahParks/bookstore/storage"
 )
@@ -47,12 +48,14 @@ func configureAPI(api *operations.BookstoreAPI) http.Handler {
 	api.JSONConsumer = runtime.JSONConsumer()
 
 	api.JSONProducer = runtime.JSONProducer()
+	api.TxtProducer = producers.TextProducer()
 
 	// Assign the endpoint handlers.
 	api.SystemAliveHandler = endpoints.HandleAlive()
-	api.APIBookDeleteHandler = endpoints.HandleDelete(logger.Named("DELETE /api/books"), bookStore, statusStore)
 	api.APIBookCheckinHandler = endpoints.HandleCheckin(logger.Named("POST /api/checkin"), statusStore)
 	api.APIBookCheckoutHandler = endpoints.HandleCheckout(logger.Named("POST /api/checkout"), statusStore)
+	api.APIBookCSVHandler = endpoints.HandleCSV(logger.Named("POST /api/csv"), bookStore, statusStore)
+	api.APIBookDeleteHandler = endpoints.HandleDelete(logger.Named("DELETE /api/books"), bookStore, statusStore)
 	api.APIBookHistoryHandler = endpoints.HandleHistory(logger.Named("POST /api/history"), statusStore)
 	api.APIBookReadHandler = endpoints.HandleRead(logger.Named("POST /api/books"), bookStore)
 	api.APIBookStatusHandler = endpoints.HandleStatus(logger.Named("POST /api/status"), statusStore)

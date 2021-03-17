@@ -24,6 +24,11 @@ type defaultResponse interface {
 	WriteResponse(rw http.ResponseWriter, producer runtime.Producer)
 }
 
+// defaultCtx creates a new context and cancel function with the default timeout.
+func defaultCtx() (ctx context.Context, cancel context.CancelFunc) {
+	return context.WithTimeout(context.Background(), defaultTimeout)
+}
+
 // errorResponse creates a response given the required assets.
 func errorResponse(code int, message string, resp defaultResponse) middleware.Responder {
 
@@ -39,7 +44,7 @@ func errorResponse(code int, message string, resp defaultResponse) middleware.Re
 	return resp
 }
 
-// defaultCtx creates a new context and cancel function with the default timeout.
-func defaultCtx() (ctx context.Context, cancel context.CancelFunc) {
-	return context.WithTimeout(context.Background(), defaultTimeout)
+// mostRecent gets the most recent status from the historical Status data.
+func mostRecent(history models.History) (status models.Status) {
+	return history.History[len(history.History)-1]
 }

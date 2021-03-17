@@ -9,6 +9,6 @@ async function deleteISBN(isbns) {
         .then(
             bookDeleteResult => { /* No operation.*/
             },
-            reason => console.error('failed api call: ' + reason)
+            reason => showAlert(reason)
         );
 }
