@@ -1,3 +1,4 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/MicahParks/bookstore)](https://goreportcard.com/report/github.com/MicahParks/bookstore) [![Go Reference](https://pkg.go.dev/badge/github.com/MicahParks/bookstore.svg)](https://pkg.go.dev/github.com/MicahParks/bookstore)
 # bookstore
 
 The original challenge, in `challenge.md`, called it a "library management system", but variations of this are known as
